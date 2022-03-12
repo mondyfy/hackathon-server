@@ -7,12 +7,14 @@ import { configService } from './config/config.service';
 import { AuthMiddleware } from './modules/middlewares/auth.middleware';
 import { LoggerMiddleware } from './modules/middlewares/logger.middleware';
 import { UserModule } from './modules/user/user.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
     UserModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
