@@ -5,8 +5,6 @@ export class CategoryInput {
   name: string;
   description: string;
   parent?: Category;
-  createdBy?: string;
-  updatedBy?: string;
 }
 
 export class UpdateCategoryInput extends PartialType(CategoryInput) {}

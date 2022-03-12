@@ -30,6 +30,9 @@ export class AuthController {
         password,
         phoneNumber,
         dateOfBirth,
+        cityName,
+        countryName,
+        streetName,
       } = createUserDto;
       if (
         password.length < 8 ||
@@ -54,6 +57,13 @@ export class AuthController {
       }
 
       const user = await this.userService.create(userInput);
+      const addressInput = {
+        cityName,
+        countryName,
+        streetName,
+        user,
+      };
+      await this.userService.createAddress(addressInput);
       const tokens = await this.tokenService.generateAuthTokens(user);
       return tokens;
     } catch (err) {

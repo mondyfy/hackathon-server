@@ -32,6 +32,9 @@ import {
         password,
         phoneNumber,
         dateOfBirth,
+        cityName,
+        countryName,
+        streetName
       } = createUserDto;
   
       const user: UserInput = {
@@ -45,7 +48,15 @@ import {
         password: await bcrypt.hash(password, 8),
         dateOfBirth,
       };
-      return this.userService.create(user);
+      const userRes = await this.userService.create(user);
+      const addressInput = {
+        cityName,
+        countryName,
+        streetName,
+        user: userRes
+      };
+      await this.userService.createAddress(addressInput);
+      return userRes;
     }
   
     @Get()

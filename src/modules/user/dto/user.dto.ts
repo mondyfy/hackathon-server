@@ -27,6 +27,15 @@ export class CreateUserDto {
 
   @ApiProperty({ type: String })
   dateOfBirth?: string;
+
+  @ApiProperty({ type: String })
+  cityName?: string;
+
+  @ApiProperty({ type: String })
+  countryName?: string;
+
+  @ApiProperty({ type: String })
+  streetName?: string;
 }
 
 export class CreateQuestionOptionDto {
@@ -40,5 +49,5 @@ export class CreateQuestionOptionDto {
   isCorrect: boolean;
 }
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
-export class UpdateQuestionOptionDto extends PartialType(CreateQuestionOptionDto) {}
+export class UpdateUserDto extends PartialType(CreateUserDto) { }
+export class UpdateQuestionOptionDto extends PartialType(CreateQuestionOptionDto) { }

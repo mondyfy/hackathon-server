@@ -1,4 +1,5 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
+import { Address } from './address.entity';
 import { BaseEntity } from './base.entity';
 import { Token } from './token.entity';
 
@@ -21,13 +22,13 @@ export class User extends BaseEntity {
 
     @Column({ name: 'profile_picture', type: 'varchar', length: 300, nullable: true })
     profilePicture: string;
-  
+
     @Column({ name: 'cover_picture', type: 'varchar', length: 300, nullable: true })
     coverPicture: string;
-  
+
     @Column({ name: 'date_of_birth', type: 'date', nullable: true })
     dateOfBirth: string;
-  
+
     @Column({ name: 'gender', type: 'varchar', length: 10, nullable: true })
     gender: string;
 
@@ -39,4 +40,8 @@ export class User extends BaseEntity {
 
     @OneToMany(() => Token, token => token.user)
     tokens?: Token[];
+
+    @OneToMany(() => Address, address => address.user)
+    @JoinColumn({ name: 'address_id' })
+    address?: Address[];
 }
