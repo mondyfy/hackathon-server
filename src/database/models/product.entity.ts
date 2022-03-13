@@ -33,7 +33,7 @@ export class Product extends BaseEntity {
   note?: string;
 
   @Column('json', { nullable: true })
-  attributes: string;
+  attributes: any;
 
   @ManyToOne(() => Category, (category) => category.products, {
     onUpdate: 'CASCADE',

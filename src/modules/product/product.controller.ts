@@ -6,6 +6,7 @@ import { UserService } from '../user/services/user.service';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 import { ProductInput } from './dto/product.input';
 import { ProductService } from './product.service';
+import { UploadService } from '../upload/upload.service';
 
 @ApiTags('product')
 @Controller('product')
@@ -14,6 +15,7 @@ import { ProductService } from './product.service';
 export class ProductController {
     constructor(
         private readonly userService: UserService,
+        private readonly uploadService: UploadService,
         private readonly productService: ProductService,
         private readonly categoryService: CategoryService,
     ) { }
@@ -22,9 +24,8 @@ export class ProductController {
     @ApiConsumes('multipart/form-data')
     async create(@Req() req, @Body() createProductDto: CreateProductDto) {
         const { user } = req?.auth;
-        const { name, description, categoryId, keywords, manufractureDate, expirationDate } = createProductDto;
+        const { name, description, categoryId, keywords, manufractureDate, expirationDate, productImage } = createProductDto;
         try {
-
             const userInfo = await this.userService.findOne(user.id);
             const productInput: ProductInput = {
                 name,
@@ -36,6 +37,10 @@ export class ProductController {
             };
             if (categoryId) {
                 productInput.category = await this.categoryService.findOne(categoryId);
+            }
+            if (productImage) {
+                const imageInfo = await this.uploadService.uploadMedia(productImage);
+                productInput.attributes = [{ id: imageInfo.asset_id, url: imageInfo.secure_url, dimesion: `${imageInfo.width}x${imageInfo.height}` }];
             }
             return this.productService.create(productInput);
         } catch (err) {

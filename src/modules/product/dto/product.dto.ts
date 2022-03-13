@@ -25,7 +25,8 @@ export class CreateProductDto {
     @ApiProperty({ type: String })
     expirationDate?: string;
 
-
+    @ApiProperty({ type: 'string', format: 'binary' })
+    productImage?: any;
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) { }
