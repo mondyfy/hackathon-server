@@ -50,9 +50,8 @@ export class ProductController {
 
     @Get()
     findAll() {
-        return this.productService.findAll();
+        return this.productService.getExpiringProducts();
     }
-
 
     @Patch(':id')
     update(

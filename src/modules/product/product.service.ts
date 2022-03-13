@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Product } from 'src/database/models/product.entity';
-import { Connection, ILike, In, Repository } from 'typeorm';
+import { Connection, ILike, In, LessThan, Repository } from 'typeorm';
 import { UpdateProductDto } from './dto/product.dto';
 import { ProductInput } from './dto/product.input';
+import { Cron } from '@nestjs/schedule';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class ProductService {
     private _productRepository: Repository<Product>;
 
-    constructor(private _connection: Connection) {
+    constructor(private _connection: Connection, private emailService: MailService) {
         this._productRepository = this._connection.getRepository(Product);
     }
 
@@ -175,5 +177,43 @@ export class ProductService {
                 status: 'verified'
             },
         })
+    }
+
+    async getExpiringProducts() {
+        const products = await this._productRepository
+            .createQueryBuilder('product')
+            .leftJoinAndSelect('product.user', 'user')
+            .where(`product.expirationDate < NOW() + INTERVAL '48 HOURS'`)
+            .getMany()
+        return products;
+    }
+
+    /* Runs every day */
+    @Cron(process.env['CRON.EXPIRY_REMINDER_POLLING_EXPRESSION'])
+    public async sendExpiryReminderEmail() {
+        // get products that are expiring within next 48 hours
+        const expiringProducts = await this.getExpiringProducts();
+        if (expiringProducts && expiringProducts.length > 0) {
+            for (const product of expiringProducts) {
+                const text = `Hi ${product.user.firstName} ${product.user.lastName},
+        your product are being expired within next 48 hours, please take a look and give it a priority on sales.
+          
+        Product details: 
+        name: ${product.name}
+        listedDate: ${product.createdAt.toISOString().substring(0, 10)}
+        expirationDate: ${product.expirationDate}
+
+        Thank you.
+          `;
+                Logger.log(`Sending expiration notification to: ${product.user.firstName}`);
+                // send emails to the owner of product
+                await this.emailService.sendMail({
+                    to: product.user.email,
+                    subject: `${product.name} - Expiry notification.`,
+                    text,
+                })
+                Logger.log(`Sending expiration notification to: ${product.user.firstName} completed.`);
+            }
+        }
     }
 }
