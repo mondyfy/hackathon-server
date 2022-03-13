@@ -1,6 +1,7 @@
 import { Entity, Column, OneToMany, JoinColumn } from 'typeorm';
 import { Address } from './address.entity';
 import { BaseEntity } from './base.entity';
+import { Product } from './product.entity';
 import { Token } from './token.entity';
 
 @Entity({ name: 'users' })
@@ -44,4 +45,7 @@ export class User extends BaseEntity {
     @OneToMany(() => Address, address => address.user)
     @JoinColumn({ name: 'address_id' })
     address?: Address[];
+
+    @OneToMany(() => Product, (product) => product.user)
+    products: Product[];
 }

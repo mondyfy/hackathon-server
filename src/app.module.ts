@@ -8,6 +8,7 @@ import { AuthMiddleware } from './modules/middlewares/auth.middleware';
 import { LoggerMiddleware } from './modules/middlewares/logger.middleware';
 import { UserModule } from './modules/user/user.module';
 import { CategoryModule } from './modules/category/category.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CategoryModule } from './modules/category/category.module';
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
     UserModule,
     CategoryModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
