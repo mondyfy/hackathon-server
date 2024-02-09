@@ -25,7 +25,6 @@ import { MailModule } from './modules/mail/mail.module';
   controllers: [AppController],
   providers: [AppService],
 })
-
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer

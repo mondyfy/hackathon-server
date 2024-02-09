@@ -45,4 +45,7 @@ export class Product extends BaseEntity {
     onDelete: 'CASCADE',
   })
   user: User;
+
+  @Column({ name: 'user_id', type: 'int', nullable: true })
+  userId?: number;
 }

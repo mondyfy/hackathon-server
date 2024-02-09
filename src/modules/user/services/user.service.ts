@@ -36,21 +36,26 @@ export class UserService {
       where: {
         id,
       },
-      relations: ['address']
+      relations: ['address'],
     });
   }
 
   findByEmail(email: string) {
     return this._userRepository.findOneOrFail({
       where: {
-        email
+        email,
       },
-      select: ['id', 'password']
+      select: ['id', 'password'],
     });
   }
 
   async update(id: number, updateUserDto: UpdateUserInput) {
-    const user = await this._userRepository.findOneOrFail(id, { select: ['password'] });
+    const user = await this._userRepository.findOneOrFail({
+      where: {
+        id,
+      },
+      select: ['password'],
+    });
     user.firstName = updateUserDto.firstName || user.firstName;
     user.lastName = updateUserDto.lastName || user.lastName;
     user.password = updateUserDto.password || user.password;

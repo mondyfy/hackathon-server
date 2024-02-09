@@ -6,10 +6,19 @@ import { UploadModule } from '../upload/upload.module';
 import { UserModule } from '../user/user.module';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Product } from 'src/database/models/product.entity';
 
 @Module({
-  imports: [NestjsFormDataModule, UserModule, CategoryModule, UploadModule, MailModule],
+  imports: [
+    NestjsFormDataModule,
+    UserModule,
+    CategoryModule,
+    UploadModule,
+    TypeOrmModule.forFeature([Product]),
+    MailModule,
+  ],
   controllers: [ProductController],
-  providers: [ProductService]
+  providers: [ProductService],
 })
 export class ProductModule {}

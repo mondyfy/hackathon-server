@@ -40,11 +40,7 @@ async function bootstrap() {
       )
       .build();
     const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup(
-      process.env.API_DOCS_PREFIX || '/docs',
-      app,
-      document,
-    );
+    SwaggerModule.setup(process.env.API_DOCS_PREFIX || '/docs', app, document);
   }
   await app.listen(port);
   Logger.log(`Applicationn started on port: ${port}`);

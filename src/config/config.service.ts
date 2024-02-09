@@ -1,10 +1,10 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { join } from 'path';
-
-require('dotenv').config();
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 class ConfigService {
-  constructor(private env: { [k: string]: string | undefined }) { }
+  constructor(private env: { [k: string]: string | undefined }) {}
 
   private getValue(key: string, throwOnMissing = true): string {
     const value = this.env[key];
@@ -15,7 +15,7 @@ class ConfigService {
   }
 
   public ensureValues(keys: string[]) {
-    keys.forEach(k => this.getValue(k, true));
+    keys.forEach((k) => this.getValue(k, true));
     return this;
   }
 
@@ -36,34 +36,33 @@ class ConfigService {
       password: this.getValue('DB_PASSWORD'),
       database: this.getValue('DB_NAME'),
       synchronize: this.getValue('DB_SYNCHRONIZE') === 'true' ? true : false,
-      autoLoadEntities: this.getValue('DB_AUTOLOADENTITIES') === 'true' ? true : false,
+      autoLoadEntities:
+        this.getValue('DB_AUTOLOADENTITIES') === 'true' ? true : false,
       migrationsTableName: 'migrations',
       migrations: [join(__dirname, '../database/migrations', '*.{ts,js}')],
       subscribers: ['src/database/subscribers/*.ts'],
       entities: [join(__dirname, '../database/models', '*.entity.{ts,js}')],
 
-      cli: {
-        migrationsDir: 'src/database/migrations',
-        subscribersDir: 'src/database/subscribers',
-      },
+      // cli: {
+      //   migrationsDir: 'src/database/migrations',
+      //   subscribersDir: 'src/database/subscribers',
+      // },
       ssl: this.isProduction(),
       extra: {
-        ssl:  this.isProduction() ? { rejectUnauthorized: false } : null,
-      }
+        ssl: this.isProduction() ? { rejectUnauthorized: false } : null,
+      },
     };
   }
-
 }
 
-const configService = new ConfigService(process.env)
-  .ensureValues([
-    'DB_HOST',
-    'DB_PORT',
-    'DB_USERNAME',
-    'DB_PASSWORD',
-    'DB_NAME',
-    'DB_SYNCHRONIZE',
-    'DB_AUTOLOADENTITIES',
-  ]);
+const configService = new ConfigService(process.env).ensureValues([
+  'DB_HOST',
+  'DB_PORT',
+  'DB_USERNAME',
+  'DB_PASSWORD',
+  'DB_NAME',
+  'DB_SYNCHRONIZE',
+  'DB_AUTOLOADENTITIES',
+]);
 
 export { configService };
